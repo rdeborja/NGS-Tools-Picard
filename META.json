@@ -1,0 +1,62 @@
+{
+   "abstract" : "NGS::Tools::Picard Perl package for Picard suite of tools",
+   "author" : [
+      "Richard de Borja <richard.deborja@sickkids.ca>"
+   ],
+   "dynamic_config" : 1,
+   "generated_by" : "Module::Build version 0.4205",
+   "license" : [
+      "artistic_2"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "NGS-Tools-Picard",
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Test::More" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "Module::Build" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "NGS::Tools::Picard" : {
+         "file" : "lib/NGS/Tools/Picard.pm",
+         "version" : "0.11"
+      },
+      "NGS::Tools::Picard::AddOrReplaceReadGroups" : {
+         "file" : "lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm"
+      },
+      "NGS::Tools::Picard::CollectInsertSizeMetrics" : {
+         "file" : "lib/NGS/Tools/Picard/CollectInsertSizeMetrics.pm"
+      },
+      "NGS::Tools::Picard::MarkDuplicates" : {
+         "file" : "lib/NGS/Tools/Picard/MarkDuplicates.pm"
+      },
+      "NGS::Tools::Picard::MetricsParser" : {
+         "file" : "lib/NGS/Tools/Picard/MetricsParser.pm"
+      },
+      "NGS::Tools::Picard::SamToFastq" : {
+         "file" : "lib/NGS/Tools/Picard/SamToFastq.pm"
+      },
+      "NGS::Tools::Picard::SortSam" : {
+         "file" : "lib/NGS/Tools/Picard/SortSam.pm"
+      },
+      "NGS::Tools::Picard::ValidateSamFile" : {
+         "file" : "lib/NGS/Tools/Picard/ValidateSamFile.pm"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "license" : [
+         "http://www.perlfoundation.org/artistic_license_2_0"
+      ]
+   },
+   "version" : "0.11"
+}

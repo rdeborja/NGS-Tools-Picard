@@ -1,0 +1,43 @@
+---
+abstract: 'NGS::Tools::Picard Perl package for Picard suite of tools'
+author:
+  - 'Richard de Borja <richard.deborja@sickkids.ca>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  Module::Build: 0
+dynamic_config: 1
+generated_by: 'Module::Build version 0.4205, CPAN::Meta::Converter version 2.120921'
+license: artistic_2
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: NGS-Tools-Picard
+provides:
+  NGS::Tools::Picard:
+    file: lib/NGS/Tools/Picard.pm
+    version: 0.11
+  NGS::Tools::Picard::AddOrReplaceReadGroups:
+    file: lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
+    version: 0
+  NGS::Tools::Picard::CollectInsertSizeMetrics:
+    file: lib/NGS/Tools/Picard/CollectInsertSizeMetrics.pm
+    version: 0
+  NGS::Tools::Picard::MarkDuplicates:
+    file: lib/NGS/Tools/Picard/MarkDuplicates.pm
+    version: 0
+  NGS::Tools::Picard::MetricsParser:
+    file: lib/NGS/Tools/Picard/MetricsParser.pm
+    version: 0
+  NGS::Tools::Picard::SamToFastq:
+    file: lib/NGS/Tools/Picard/SamToFastq.pm
+    version: 0
+  NGS::Tools::Picard::SortSam:
+    file: lib/NGS/Tools/Picard/SortSam.pm
+    version: 0
+  NGS::Tools::Picard::ValidateSamFile:
+    file: lib/NGS/Tools/Picard/ValidateSamFile.pm
+    version: 0
+resources:
+  license: http://www.perlfoundation.org/artistic_license_2_0
+version: 0.11
