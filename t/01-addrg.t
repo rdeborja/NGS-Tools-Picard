@@ -65,7 +65,6 @@ my $expected_cmd = join(' ',
 
 # compare the generated and expected commands
 is($picard_addrg->{'cmd'}, $expected_cmd, 'command matches expected');
-print Dumper($picard_addrg);
 
 # cleanup
 remove_tree($tempdir);

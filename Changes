@@ -29,3 +29,6 @@ Revision history for NGS-Tools-Picard
 
 0.09    2014-06-22
         Updated Picard.pm to include HPF::Roles::SGE instead of HPF::SGE::Roles.
+
+0.12    2014-11-08
+        Updated tests for roles instead of the class.  Code cleanup.

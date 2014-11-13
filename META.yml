@@ -16,7 +16,7 @@ name: NGS-Tools-Picard
 provides:
   NGS::Tools::Picard:
     file: lib/NGS/Tools/Picard.pm
-    version: 0.11
+    version: 0.12
   NGS::Tools::Picard::AddOrReplaceReadGroups:
     file: lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
     version: 0
@@ -25,6 +25,9 @@ provides:
     version: 0
   NGS::Tools::Picard::MarkDuplicates:
     file: lib/NGS/Tools/Picard/MarkDuplicates.pm
+    version: 0
+  NGS::Tools::Picard::MergeSamFiles:
+    file: lib/NGS/Tools/Picard/MergeSamFiles.pm
     version: 0
   NGS::Tools::Picard::MetricsParser:
     file: lib/NGS/Tools/Picard/MetricsParser.pm

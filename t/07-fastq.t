@@ -1,4 +1,4 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 use Test::Moose;
 use Test::Exception;
 use MooseX::ClassCompositor;
@@ -29,4 +29,13 @@ my $test_bam = 'test.bam';
 my $picard_fastq = $picard->SamToFastq(
 	input => $test_bam
 	);
-print Dumper($picard_fastq);
+my $expected_cmd = join(' ',
+	"java -Xmx4g",
+	'-jar ${PICARDROOT}/SamToFastq.jar',
+	"INPUT=test.bam",
+	"FASTQ=test.read1.fastq.gz",
+	"VALIDATION_STRINGENCY=LENIENT",
+	"INCLUDE_NON_PF_READS=true",
+	"SECOND_END_FASTQ=test.read2.fastq.gz"
+	);
+is($picard_fastq->{'cmd'}, $expected_cmd, 'command matches expected');

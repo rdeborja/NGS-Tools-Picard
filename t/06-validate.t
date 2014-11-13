@@ -1,4 +1,4 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 use Test::Moose;
 use Test::Exception;
 use MooseX::ClassCompositor;
@@ -27,4 +27,10 @@ my $input = '/tmp/test/test.bam';
 my $picard_validate = $picard->ValidateSamFile(
 	input => $input
 	);
-print Dumper($picard_validate);
+my $expected_cmd = join(' ',
+	'java -Xmx4g -jar ${PICARDROOT}/ValidateSamFile.jar',
+	'INPUT=/tmp/test/test.bam',
+	'OUTPUT=test.validate.txt',
+	'VALIDATION_STRINGENCY=LENIENT MODE=SUMMARY'
+	);
+is($picard_validate->{'cmd'}, $expected_cmd, 'command matches expected');

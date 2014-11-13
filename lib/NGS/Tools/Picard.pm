@@ -9,7 +9,6 @@ with 'NGS::Tools::Picard::MarkDuplicates';
 with 'NGS::Tools::Picard::ValidateSamFile';
 with 'NGS::Tools::Picard::SamToFastq';
 with 'NGS::Tools::Picard::MetricsParser';
-with 'HPF::Roles::SGE';
 
 use strict;
 use warnings FATAL => 'all';
@@ -20,11 +19,11 @@ use autodie;
 
 =head1 VERSION
 
-Version 0.11
+Version 0.12
 
 =cut
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 =head1 SYNOPSIS
 

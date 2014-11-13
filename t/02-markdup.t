@@ -1,4 +1,4 @@
-use Test::More tests => 1;
+use Test::More tests => 2;
 use Test::Moose;
 use Test::Exception;
 use MooseX::ClassCompositor;
@@ -27,6 +27,21 @@ lives_ok
 	'Class instantiated';
 
 my $picard_markdup = $picard->MarkDuplicates(
+	picard => '/hpf/tools/centos/picard-tools/1.103',
+	java => '/hpf/tools/centos/java/1.6.0/bin/java',
 	input => $input,
 	tmpdir => './tmp'
 	);
+
+my $expected_cmd = join(' ',
+	"/hpf/tools/centos/java/1.6.0/bin/java -Xmx4g -Djava.io.tmpdir=./tmp",
+	"-jar /hpf/tools/centos/picard-tools/1.103/MarkDuplicates.jar",
+	"INPUT=input.bam",
+	"OUTPUT=input.markdup.bam",
+	"METRICS_FILE=input.markdup.metrics.txt",
+	"VALIDATION_STRINGENCY=LENIENT",
+	"CREATE_INDEX=true",
+	"REMOVE_DUPLICATES=false",
+	"ASSUME_SORTED=false"
+	);
+is($picard_markdup->{'cmd'}, $expected_cmd, "command matches expected");

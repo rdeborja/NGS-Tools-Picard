@@ -10,6 +10,7 @@ lib/NGS/Tools/Picard.pm
 lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
 lib/NGS/Tools/Picard/CollectInsertSizeMetrics.pm
 lib/NGS/Tools/Picard/MarkDuplicates.pm
+lib/NGS/Tools/Picard/MergeSamFiles.pm
 lib/NGS/Tools/Picard/MetricsParser.pm
 lib/NGS/Tools/Picard/SamToFastq.pm
 lib/NGS/Tools/Picard/SortSam.pm
