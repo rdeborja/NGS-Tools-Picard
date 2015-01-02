@@ -1,12 +1,14 @@
 #!/usr/bin/env perl
 
-### bam2fastq.pl ##############################################################################
+### bam2fastq.pl ##################################################################################
 # Convert a BAM file to a FASTQ file using Picard's SamToFastq.jar program.
 
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-04-15		rdeborja            Initial development.
 # 0.02          2014-06-26      rdeborja            added temporary directory 
+# 0.03          2015-01-02      rdeborja            removed HPF dependency, executing command via
+#                                                   system() call.
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -64,11 +66,6 @@ sub main {
             }
         }
 
-    my $template_dir = join('/',
-    	dist_dir('HPF'),
-    	'templates'
-    	);
-    my $template = 'submit_to_sge.template';
     my $memory = $opts{'memory'} * 2;
     my $picard = NGS::Tools::Picard->new();
     my $picard_fastq = $picard->SamToFastq(
@@ -78,18 +75,11 @@ sub main {
     	memory => $opts{'memory'},
         tmpdir => $opts{'tmp'}
     	);
-    my @hold_for = ();
-    my $picard_script = $picard->create_cluster_shell_script(
-    	command => $picard_fastq->{'cmd'},
-    	jobname => join('_', 'picard', 'fastq'),
-    	template_dir => $template_dir,
-    	template => $template,
-    	memory => $memory,
-    	hold_for => \@hold_for,
-        queue => 'long.q'
-    	);
 
-    return 0;
+    my $picard_status = system($picard_fastq->{'cmd'});
+    print "\nBAM to FASTQ conversion complete: exit status $picard_status\n\n";
+
+    return $picard_status;
     }
 
 

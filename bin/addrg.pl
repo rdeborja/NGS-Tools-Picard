@@ -6,6 +6,8 @@
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-06-22      rdeborja            initial development
+# 0.02          2015-01-02      rdeborja            removed HPF dependencies, executes command
+#                                                   using the system() function
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -77,22 +79,11 @@ sub main {
     	memory => $opts{'memory'},
     	tmpdir => $opts{'tmpdir'}
     	);
-    my $template_dir = join('/',
-        dist_dir('HPF'),
-        'templates'
-        );
-    my $template = 'submit_to_sge.template';
-    my @hold_for = ();
-    $picard->create_cluster_shell_script(
-    	command => $rg->{'cmd'},
-    	memory => $opts{'memory'} * 2,
-    	jobname => join('_', 'rg'),
-    	template_dir => $template_dir,
-    	template => $template,
-    	hold_for => \@hold_for
-    	);
 
-    return 0;
+    my $picard_status = system($rg->{'cmd'});
+    print "\nPicard complete: exit status $picard_status\n\n";
+
+    return $picard_status;
     }
 
 

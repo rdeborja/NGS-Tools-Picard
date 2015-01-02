@@ -19,6 +19,9 @@ my $builder = Module::Build->new(
     requires => {
         #'ABC'              => 1.6,
         #'Foo::Bar::Module' => 5.0401,
+        'Moose'             => 0,
+        'Moose::Role'       => 0,
+        'Carp'              => 0
     },
     add_to_cleanup     => [ 'NGS-Tools-Picard-*' ],
     create_makefile_pl => 'traditional',

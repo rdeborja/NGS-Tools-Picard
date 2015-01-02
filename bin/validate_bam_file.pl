@@ -1,11 +1,13 @@
 #!/usr/bin/perl
 
-### validate_bam_file.pl ##############################################################################
+### validate_bam_file.pl ##########################################################################
 # Run Picard's ValidateSamFile.jar on a BAM file.
 
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-04-01      rdeborja            Initial development.
+# 0.02          2015-01-02      rdeborja            removed HPF dependency, executes command using
+#                                                   the system() function
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -72,23 +74,10 @@ sub main {
     	memory => $opts{'memory'}
     	);
 
-    my $template_dir = join('/',
-    	dist_dir('HPF'),
-    	'templates'
-    	);
-    my $template = 'submit_to_sge.template';
-    my $memory = $opts{'memory'} * 2;
-    my @hold_for = ();
-    my $picard_script = $picard->create_cluster_shell_script(
-    	command => $picard_validate->{'cmd'},
-    	jobname => join('_', 'picard', 'validate'),
-    	template_dir => $template_dir,
-    	template => $template,
-    	memory => $memory,
-    	hold_for => \@hold_for
-    	);
+    my $picard_status = system($picard_validate->{'cmd'});
+    print "\nPicard complete: exit status $picard_status\n\n";
 
-    return 0;
+    return $picard_status;
     }
 
 

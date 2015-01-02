@@ -6,6 +6,8 @@
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-04-01      rdeborja            initial development
+# 0.02          2015-01-02      rdeborja            removed HPF dependency, executing command with
+#                                                   the system() command.
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -22,8 +24,7 @@ our %opts = (
     bam => undef,
 	java => '/hpf/tools/centos/java/1.6.0/bin/java',
 	picard => '/hpf/tools/centos/picard-tools/1.103',
-	memory => 8,
-    cluster => 'FALSE'
+	memory => 8
     );
 
 ### MAIN CALLER ###################################################################################
@@ -49,8 +50,7 @@ sub main {
         "bam|b=s",
         "java|j:s",
         "picard|p:s",
-        "memory|m:i",
-        "cluster|c:s"
+        "memory|m:i"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
@@ -63,46 +63,16 @@ sub main {
             }
         }
 
-    # where are the HPF::SGE templates located to create shell scripts
-    my $template_dir = join('/',
-        dist_dir('HPF'),
-        'templates'
-        );
-    my $template = 'submit_to_sge.template';
-    my $memory = $opts{'memory'} * 2;
     my $picard = NGS::Tools::Picard->new();
     my $insertsize = $picard->CollectInsertSizeMetrics(
     	input => $opts{'bam'},
         java => $opts{'java'},
         picard => $opts{'picard'}
     	);
-    my @hold_for = ();
-    my $picard_script = $picard->create_sge_shell_scripts(
-        command => $insertsize->{'cmd'},
-        jobname => join('_', 'tumour', 'picard', 'insertsize'),
-        template_dir => $template_dir,
-        template => $template,
-        memory => $memory,
-        hold_for => \@hold_for
-        );
-
-    if ($opts{'cluster'} eq 'FALSE') {
-        my $submit_command = join(' ',
-            'bash -c',
-            $picard_script->{'output'}
-            );
-        system($picard_script->{'output'});
-        }
-    elsif ($opts{'cluster'} eq 'TRUE') {
-        my $submit_command = join(' ',
-            'qsub',
-            $picard_script->{'output'}
-            );
-        }
-    else {
-        croak("Invalid cluster option");
-        }
-    return 0;
+    my $picard_status = system($insertsize->{'cmd'});
+    print "\nPicard complete: exit status $picard_status\n\n";
+    
+    return $picard_status;
     }
 
 
@@ -124,7 +94,6 @@ B<generate_insert_size_metrics.pl> [options] [file ...]
     --java          full path to Java program
     --picard        full path to Picard suite of programs
     --memory        memory to use for Java engine (default: 4)
-    --cluster       flag to determine whether to submit to a cluster (default: FALSE)
 
 =head1 OPTIONS
 
@@ -153,11 +122,6 @@ Full path to the directory containing the Picard JAR files
 =item B<--memory>
 
 Memory to allocate to the Java engine (default: 4)
-
-=item B<--cluster>
-
-Flag to identify whether to submit the command to a cluster using qsub or to execuate
-at the command line using BASH
 
 =back
 

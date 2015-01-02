@@ -6,6 +6,8 @@
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-05-05      rdeborja            initial development
+# 0.02          2015-01-02      rdeborja            removed HPF dependency, executing command with
+#                                                   system() function
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -63,14 +65,6 @@ sub main {
             }
         }
 
-    # where are the HPF::SGE templates located to create shell scripts
-    my $template_dir = join('/',
-        dist_dir('HPF'),
-        'templates'
-        );
-    my $template = 'submit_to_sge.template';
-    my $memory = $opts{'memory'} * 2;
-
     my $picard = NGS::Tools::Picard->new();
     my $markdup_run = $picard->MarkDuplicates(
     	input => $opts{'bam'},
@@ -80,16 +74,10 @@ sub main {
         tmpdir => $opts{'tmpdir'}
     	);
 
-    my @hold_for = ();
-    my $picard_script = $picard->create_sge_shell_scripts(
-    	command => $markdup_run->{'cmd'},
-    	jobname => join('_', 'markdup', 'picard'),
-    	template_dir => $template_dir,
-    	template => $template,
-    	memory => $memory,
-    	hold_for => \@hold_for
-    	);
-    return 0;
+    my $picard_status = system($markdown_run->{'cmd'});
+    print "\nPicard complete: exit status $picard_status\n\n";
+
+    return $picard_status;
     }
 
 

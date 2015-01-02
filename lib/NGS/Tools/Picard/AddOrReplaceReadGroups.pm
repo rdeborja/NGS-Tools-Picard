@@ -2,8 +2,6 @@ package NGS::Tools::Picard::AddOrReplaceReadGroups;
 use Moose::Role;
 use MooseX::Params::Validate;
 
-with 'HPF::Roles::SGE';
-
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;

@@ -1,11 +1,13 @@
 #!/usr/bin/perl
 
-### sortsam.pl ##############################################################################
+### sortsam.pl ####################################################################################
 # Sort a SAM/BAM file.
 
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
 # 0.01          2014-04-15      rdeborja            Initial development.
+# 0.02          2015-01-02      rdeborja            removed HPF dependency, executing command with
+#                                                   system() function
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -63,12 +65,6 @@ sub main {
             }
         }
 
-    my $template_dir = join('/',
-    	dist_dir('HPF'),
-    	'templates'
-    	);
-    my $template = 'submit_to_sge.template';
-    my $memory = $opts{'memory'} * 2;
     my $picard = NGS::Tools::Picard->new();
     my $picard_fastq = $picard->SortSam(
     	input => $opts{'bam'},
@@ -78,18 +74,11 @@ sub main {
     	sortorder => $opts{'order'},
         tmpdir => './tmp'
     	);
-    my @hold_for = ();
-    my $picard_script = $picard->create_cluster_shell_script(
-    	command => $picard_fastq->{'cmd'},
-    	jobname => join('_', 'picard', 'sort'),
-    	template_dir => $template_dir,
-    	template => $template,
-    	memory => $memory,
-    	hold_for => \@hold_for,
-        queue => 'long.q'
-    	);
 
-    return 0;
+    my $picard_status = system($picard_fastq->{'cmd'});
+    print "\nPicard completed: exit status $picard_stats\n\n";
+
+    return $picard_status;
     }
 
 
