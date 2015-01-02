@@ -76,7 +76,7 @@ sub main {
     	);
 
     my $picard_status = system($picard_fastq->{'cmd'});
-    print "\nPicard completed: exit status $picard_stats\n\n";
+    print "\nPicard completed: exit status $picard_status\n\n";
 
     return $picard_status;
     }
