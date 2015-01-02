@@ -33,3 +33,7 @@ Revision history for NGS-Tools-Picard
 0.12    2014-11-08
         Updated tests for roles instead of the class.  Code cleanup.  Removed dependency on
         any HPF library.  This makes the package completely independent of execution.
+
+0.13    2015-01-02
+        Fixed missing library File::Path for role NGS::Tools::Picard::SamToFastq
+
