@@ -8,7 +8,7 @@
 # 0.01          2014-05-05      rdeborja            initial development
 # 0.02          2015-01-02      rdeborja            removed HPF dependency, executing command with
 #                                                   system() function
-
+# 0.03          2015-01-30      added 
 ### INCLUDES ######################################################################################
 use warnings;
 use strict;
@@ -17,6 +17,8 @@ use Getopt::Long;
 use Pod::Usage;
 use NGS::Tools::Picard;
 use File::ShareDir ':ALL';
+use HPF::PBS;
+use IPC::Run3;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs

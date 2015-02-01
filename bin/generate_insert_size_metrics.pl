@@ -22,8 +22,8 @@ use File::ShareDir ':ALL';
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
     bam => undef,
-	java => '/hpf/tools/centos/java/1.6.0/bin/java',
-	picard => '/hpf/tools/centos/picard-tools/1.103',
+	java => '/hpf/tools/centos6/java/1.7.0/bin/java',
+	picard => '/hpf/tools/centos6/picard-tools/1.108',
 	memory => 8
     );
 
@@ -91,8 +91,8 @@ B<generate_insert_size_metrics.pl> [options] [file ...]
     --help          brief help message
     --man           full documentation
     --bam           name of BAM file to process
-    --java          full path to Java program
-    --picard        full path to Picard suite of programs
+    --java          full path to Java program (default: /hpf/tools/centos6/java/1.7.0/bin/java)
+    --picard        full path to Picard suite of programs (default: )
     --memory        memory to use for Java engine (default: 4)
 
 =head1 OPTIONS

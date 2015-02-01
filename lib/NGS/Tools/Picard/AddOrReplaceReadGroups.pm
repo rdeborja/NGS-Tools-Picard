@@ -291,8 +291,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
 
-Dr. Roland Arnold -- The Hospital for Sick Children
-
 =head1 BUGS
 
 Please report any bugs or feature requests to C<bug-test-test at rt.cpan.org>, or through

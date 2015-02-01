@@ -27,15 +27,15 @@ lives_ok
 	'Class instantiated';
 
 my $picard_markdup = $picard->MarkDuplicates(
-	picard => '/hpf/tools/centos/picard-tools/1.103',
-	java => '/hpf/tools/centos/java/1.6.0/bin/java',
+	picard => '/hpf/tools/centos6/picard-tools/1.108',
+	java => '/hpf/tools/centos6/java/1.7.0/bin/java',
 	input => $input,
 	tmpdir => './tmp'
 	);
 
 my $expected_cmd = join(' ',
-	"/hpf/tools/centos/java/1.6.0/bin/java -Xmx4g -Djava.io.tmpdir=./tmp",
-	"-jar /hpf/tools/centos/picard-tools/1.103/MarkDuplicates.jar",
+	"/hpf/tools/centos6/java/1.7.0/bin/java -Xmx4g -Djava.io.tmpdir=./tmp",
+	"-jar /hpf/tools/centos6/picard-tools/1.108/MarkDuplicates.jar",
 	"INPUT=input.bam",
 	"OUTPUT=input.markdup.bam",
 	"METRICS_FILE=input.markdup.metrics.txt",

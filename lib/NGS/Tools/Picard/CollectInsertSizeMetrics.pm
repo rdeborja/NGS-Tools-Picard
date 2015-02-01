@@ -40,6 +40,10 @@ Moose method for insert size metrics.
 
 =item * memory: max amount of memory to allocate to the Java engine (default: 4)
 
+=item * tmpdir: temporary directory to write intermediate output to (optional);
+
+=item * number_of_reads_to_process: number of reads to process when calculating statistics, by defaul this processes all reads (optional)
+
 =back
 
 =cut
@@ -78,6 +82,11 @@ sub CollectInsertSizeMetrics {
 			default		=> 4
 			},
 		tmpdir => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
+			},
+		number_of_reads_to_process => {
 			isa			=> 'Str',
 			required	=> 0,
 			default		=> ''
@@ -132,14 +141,20 @@ sub CollectInsertSizeMetrics {
 		'INPUT=' . $args{'input'},
 		'OUTPUT=' . $output,
 		'HISTOGRAM_FILE=' . $histogram,
-		'VALIDATION_STRINGENCY=' . $args{'stringency'},
+		'VALIDATION_STRINGENCY=' . $args{'stringency'}
 		);
+
+	if ($args{'number_of_reads_to_process'} ne '') {
+		$options = join(' ',
+			$options,
+			'STOP_AFTER=' . $args{'number_of_reads_to_process'}
+			);
+		}
 
 	my $cmd = join(' ',
 		$program,
 		$options
 		);
-
 
 	my %return_values = (
 		cmd => $cmd,
@@ -207,8 +222,6 @@ Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
 =head1 ACKNOWLEDGEMENT
 
 Dr. Adam Shlien, PI -- The Hospital for Sick Children
-
-Dr. Roland Arnold -- The Hospital for Sick Children
 
 =head1 BUGS
 
