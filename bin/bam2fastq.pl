@@ -5,10 +5,12 @@
 
 ### HISTORY #######################################################################################
 # Version       Date            Developer           Comments
-# 0.01          2014-04-15		rdeborja            Initial development.
+# 0.01          2014-04-15      rdeborja            Initial development.
 # 0.02          2014-06-26      rdeborja            added temporary directory 
 # 0.03          2015-01-02      rdeborja            removed HPF dependency, executing command via
 #                                                   system() call.
+# 0.04          2015-02-24      rdeborja            fixed bug where default java and picard were
+#                                                   pointing to the old HPF locations
 
 ### INCLUDES ######################################################################################
 use warnings;
@@ -18,14 +20,15 @@ use Getopt::Long;
 use Pod::Usage;
 use NGS::Tools::Picard;
 use File::ShareDir ':ALL';
+use HPF::PBS;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
-	bam => undef,
-	java => '/hpf/tools/centos/java/1.7.0/bin/java',
-	picard => '/hpf/tools/centos/picard-tools/1.103',
-	memory => 8,
+    bam => undef,
+    java => '/hpf/tools/centos6/java/1.7.0/bin/java',
+    picard => '/hpf/tools/centos6/picard-tools/1.108',
+    memory => 8,
     tmp => './tmp'
     );
 
@@ -69,12 +72,12 @@ sub main {
     my $memory = $opts{'memory'} * 2;
     my $picard = NGS::Tools::Picard->new();
     my $picard_fastq = $picard->SamToFastq(
-    	input => $opts{'bam'},
-    	java => $opts{'java'},
-    	picard => $opts{'picard'},
-    	memory => $opts{'memory'},
-        tmpdir => $opts{'tmp'}
-    	);
+      input => $opts{'bam'},
+      java => $opts{'java'},
+      picard => $opts{'picard'},
+      memory => $opts{'memory'},
+      tmpdir => $opts{'tmp'}
+      );
 
     my $picard_status = system($picard_fastq->{'cmd'});
     print "\nBAM to FASTQ conversion complete: exit status $picard_status\n\n";

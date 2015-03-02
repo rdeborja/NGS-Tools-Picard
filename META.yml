@@ -16,17 +16,21 @@ name: NGS-Tools-Picard
 provides:
   NGS::Tools::Picard:
     file: lib/NGS/Tools/Picard.pm
-    version: '0.13'
+    version: '0.15'
   NGS::Tools::Picard::AddOrReplaceReadGroups:
     file: lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
   NGS::Tools::Picard::CollectInsertSizeMetrics:
     file: lib/NGS/Tools/Picard/CollectInsertSizeMetrics.pm
+  NGS::Tools::Picard::CollectMultipleMetrics:
+    file: lib/NGS/Tools/Picard/CollectMultipleMetrics.pm
   NGS::Tools::Picard::MarkDuplicates:
     file: lib/NGS/Tools/Picard/MarkDuplicates.pm
   NGS::Tools::Picard::MergeSamFiles:
     file: lib/NGS/Tools/Picard/MergeSamFiles.pm
   NGS::Tools::Picard::MetricsParser:
     file: lib/NGS/Tools/Picard/MetricsParser.pm
+  NGS::Tools::Picard::Roles::Core:
+    file: lib/NGS/Tools/Picard/Roles/Core.pm
   NGS::Tools::Picard::SamToFastq:
     file: lib/NGS/Tools/Picard/SamToFastq.pm
   NGS::Tools::Picard::SortSam:
@@ -37,4 +41,4 @@ requires:
   Carp: '0'
   Moose: '0'
   Moose::Role: '0'
-version: '0.13'
+version: '0.15'

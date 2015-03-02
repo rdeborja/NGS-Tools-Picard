@@ -1,4 +1,4 @@
-package NGS::Tools::Picard::AddOrReplaceReadGroups;
+package NGS::Tools::Picard::CollectMultipleMetrics;
 use Moose::Role;
 use MooseX::Params::Validate;
 
@@ -8,24 +8,24 @@ use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
-use File::Basename;
 use File::Path qw(make_path);
+use Log::Log4perl qw(:easy);
 
 =head1 NAME
 
-NGS::Tools::Picard::AddOrReplaceReadGroups
+NGS::Tools::Picard::CollectMultipleMetrics
 
 =head1 SYNOPSIS
 
-A Perl Moose Role to wrap Picard's AddOrReplaceReadGroups.jar tool.
+Package synopsis
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->AddOrReplaceReadGroups()
+=head2 $obj->CollectMultipleMetrics()
 
-A method that wraps the AddOrReplaceReadGroups.jar tool.
+A method that wraps Picard's CollectMultipleMetrics.jar program.
 
 =head3 Arguments:
 
@@ -33,27 +33,25 @@ A method that wraps the AddOrReplaceReadGroups.jar tool.
 
 =item * input: Input BAM/SAM file for processing (required).
 
-=item * output: Name of output BAM/SAM file with read groups and sorted (default: input prefix with .bam appended).
+=item * output: Output filename prefix, suffix will be added based on metric output.
 
-=item * sample: hash reference containing the read groups information (RGID, RGLB, RGPL, RGPU, RGSM, RGCN, RGDS, RGDT, RGPI) (required).
+=item * sorted: Boolean to identify whether the BAM/SAM file should be assumed to be sorted (default: false)
 
-=item * stringency: stringency setting for SAM/BAM file validation (default: LENIENT)
+=item * java: Full path to the Java program (default: assumes java is in the path)
 
-=item * java: full path to Java program (default: java).
+=item * picard: Full path to the directory containing the Picard suite of tools (default: $PiCARDROOT)
 
-=item * picard: full directory path of Picard tools
+=item * memory: Amount of memory in GB to allocate to the Java engine (default: 4)
 
-=item * sortorder: The order for sorting the final BAM file (default: coordinate).
+=item * stringency: Level of stringency for the Picard program, controlled list (default: LENIENT)
 
-=item * memory: Amount of memory to allocate to the Java engine (default: 4).
-
-=item * createindex: Flag to force Picard to create a BAM index file (default: true).
+=item * tmpdir: Name of temp directory to be used by the Java engine
 
 =back
 
 =cut
 
-sub AddOrReplaceReadGroups {
+sub CollectMultipleMetrics {
     my $self = shift;
     my %args = validated_hash(
         \@_,
@@ -66,15 +64,10 @@ sub AddOrReplaceReadGroups {
             required    => 0,
             default     => ''
             },
-        sample => {
-            isa         => 'HashRef',
-            required    => 0,
-            default     => {}
-            },
-        stringency => {
+        sorted => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_validation_stringency()
+            default     => 'false'
             },
         java => {
             isa         => 'Str',
@@ -91,59 +84,52 @@ sub AddOrReplaceReadGroups {
             required    => 0,
             default     => 4
             },
-        sortorder => {
+        stringency => {
             isa         => 'Str',
             required    => 0,
-            default     => 'coordinate'
-            },
-        createindex => {
-            isa         => 'Str',
-            required    => 0,
-            default     => $self->get_createindex()
+            default     => $self->get_validation_stringency()
             },
         tmpdir => {
+            isa         => 'Str',
+            required    => 0,
+            default     => ''
+            },
+        number_of_reads_to_process => {
             isa         => 'Str',
             required    => 0,
             default     => ''
             }
         );
 
-    my $sample_info = $args{'sample'};
     my $output;
     if ('' eq $args{'output'}) {
         $output = join('.',
             File::Basename::basename($args{'input'}, qw( .bam .sam )),
-            'picard',
-            'rg',
-            'bam'
+            'multimetrics'
             );
         }
     else {
         $output = $args{'output'};
         }
-
     my $memory = join('',
         $args{'memory'},
         'g'
         );
-
     my $picard_jar = join('/',
         $args{'picard'},
-        'AddOrReplaceReadGroups.jar'
+        'CollectMultipleMetrics.jar'
         );
     my $program = join(' ',
         $args{'java'},
-        "-Xmx" . $memory,
+        '-Xmx' . $memory
         );
-
-    # create a tmpdir and use it in the java command
     if ($args{'tmpdir'} ne '') {
         if (! -d $args{'tmpdir'}) {
-            make_path($args{'tmpdir'});
+            make_path($args{'tmpdir'}, {verbose => 1, mode => 0770});
             }
         $program = join(' ',
             $program,
-            '-Djava.io.tmpdir=' . $args{'tmpdir'}
+            "-Djava.io.tmpdir=$args{'tmpdir'}"
             );
         }
     $program = join(' ',
@@ -151,138 +137,28 @@ sub AddOrReplaceReadGroups {
         '-jar',
         $picard_jar
         );
-
-    # setup the options for Picard
+    # setup the Picard options
     my $options = join(' ',
         'INPUT=' . $args{'input'},
         'OUTPUT=' . $output,
-        'VALIDATION_STRINGENCY=' . $args{'stringency'},
-        'SORT_ORDER=' . $args{'sortorder'},
-        'CREATE_INDEX=' . $args{'createindex'}
+        'ASSUME_SORTED=' . $args{'sorted'},
+        'VALIDATION_STRINGENCY=' . $args{'stringency'}
         );
-
-    # create a string containing the read group elements including the RGID
-    # from above, at minimum the required read group parameters include:
-    # RDID (obtained above), RGSM, RGPL, RGPU, RGLB
-    my @params;
-    foreach my $read_group_param (keys(%$sample_info)) {
-        if ('' ne $sample_info->{$read_group_param}) {
-            push(@params, join('=', $read_group_param, $sample_info->{$read_group_param}));
-            }
+    if ($args{'number_of_reads_to_process'} ne '') {
+        $options = join(' ',
+            $options,
+            'STOP_AFTER=' . $args{'number_of_reads_to_process'}
+            );
         }
-    my $param_string = join(' ',
-        sort(@params)
-        );
     my $cmd = join(' ',
         $program,
-        $options,
-        $param_string
+        $options
         );
-
     my %return_values = (
-        cmd => $cmd,
-        output => $output
+        cmd => $cmd
         );
 
     return(\%return_values);
-    }
-
-=head2 $obj->create_rg()
-
-Create a Read Group (RG) file for use with the method AddOrReplaceReadGroups.
-
-=head3 Arguments:
-
-=over 2
-
-=item * id: unique identifier, this should be left blank as the method will autogenerate a unique identifier
-
-=item * sample: name of sample
-
-=item * library: name of library
-
-=item * platform: name of platform sequencing was performed on (default: ILLUMINA)
-
-=item * platform_unit: flowcell ID (default: none)
-
-=item * center: name of sequencing center (default: tcag.ca)
-
-=back
-
-=header3 Return Values:
-
-=over 2
-
-=item * Returns a hash reference containing the following keys: RGSM
-
-=back
-
-=cut
-
-sub create_rg {
-    my $self = shift;
-    my %args = validated_hash(
-        \@_,
-        id => {
-            isa         => 'Str',
-            required    => 0,
-            default     => ''
-            },
-        sample => {
-            isa         => 'Str',
-            required    => 1
-            },
-        library => {
-            isa         => 'Str',
-            required    => 1
-            },
-        platform => {
-            isa         => 'Str',
-            required    => 0,
-            default     => 'ILLUMINA'
-            },
-        platform_unit => {
-            isa         => 'Str',
-            required    => 0,
-            default     => 'none'
-            },
-        center => {
-            isa         => 'Str',
-            required    => 0,
-            default     => 'tcag.ca'
-            },
-        description => {
-            isa         => 'Str',
-            required    => 0,
-            default     => ''
-            }
-        );
-
-    my %_sample_rg = (
-        RGSM        => $args{'sample'},
-        RGLB        => $args{'library'},
-        RGPL        => $args{'platform'},
-        RGPU        => $args{'platform_unit'},
-        RGCN        => $args{'center'}
-        );
-
-    # create a unique identifier for the read group ID
-    my $uuid_object = Data::UUID->new();
-    my $uuid = $uuid_object->create();
-    my $uuid_string = $uuid_object->to_string($uuid);
-    if ($args{'id'} eq '') {
-        $_sample_rg{'RGID'} = $uuid_string;
-        }
-    else {
-        $_sample_rg{'RGID'} = $args{'id'};
-        }
-
-    # add optional parameters if defined by the caller
-    if ($args{'description'} ne '') {
-        $_sample_rg{'RGDS'} = $args{'description'}
-        }
-
-    return(\%_sample_rg);
     }
 
 =head1 AUTHOR
@@ -303,7 +179,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::Picard::AddOrReplaceReadGroups
+    perldoc NGS::Tools::Picard::CollectMultipleMetrics
 
 You can also look for information at:
 
@@ -373,4 +249,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::Picard::AddOrReplaceReadGroups
+1; # End of NGS::Tools::Picard::CollectMultipleMetrics

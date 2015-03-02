@@ -9,11 +9,9 @@ Changes
 lib/NGS/Tools/Picard.pm
 lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
 lib/NGS/Tools/Picard/CollectInsertSizeMetrics.pm
-lib/NGS/Tools/Picard/CollectMultipleMetrics.pm
 lib/NGS/Tools/Picard/MarkDuplicates.pm
 lib/NGS/Tools/Picard/MergeSamFiles.pm
 lib/NGS/Tools/Picard/MetricsParser.pm
-lib/NGS/Tools/Picard/Roles/Core.pm
 lib/NGS/Tools/Picard/SamToFastq.pm
 lib/NGS/Tools/Picard/SortSam.pm
 lib/NGS/Tools/Picard/ValidateSamFile.pm
@@ -30,5 +28,4 @@ t/05-get_insertsize.t
 t/06-validate.t
 t/07-fastq.t
 t/08-insert_size_metrics.t
-t/09-multimetrics.t
 t/example/sample.insertsizemetrics.txt

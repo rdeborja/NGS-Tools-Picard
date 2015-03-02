@@ -2,6 +2,8 @@ package NGS::Tools::Picard::SamToFastq;
 use Moose::Role;
 use MooseX::Params::Validate;
 
+with 'NGS::Tools::Picard::Roles::Core';
+
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
@@ -63,17 +65,17 @@ sub SamToFastq {
 		stringency => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> 'LENIENT'
+			default		=> $self->get_validation_stringency()
 			},
 		java => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> 'java'
+			default		=> $self->get_java()
 			},
 		picard => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> '${PICARDROOT}'
+			default		=> $self->get_picard()
 			},
 		memory => {
 			isa			=> 'Int',

@@ -37,3 +37,9 @@ Revision history for NGS-Tools-Picard
 0.13    2015-01-02
         Fixed missing library File::Path for role NGS::Tools::Picard::SamToFastq
 
+0.14    2015-02-03
+        Added wrapper method for CollectMultipleMetrics.jar program.
+
+0.15    2015-03-02
+        Added a NGS::Tools::Picard::Roles::Core role that contains the common attributes
+        for each of the Picard suite of tools (e.g. full path to java and picard software).
