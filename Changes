@@ -43,3 +43,9 @@ Revision history for NGS-Tools-Picard
 0.15    2015-03-02
         Added a NGS::Tools::Picard::Roles::Core role that contains the common attributes
         for each of the Picard suite of tools (e.g. full path to java and picard software).
+
+0.16    2015-03-06
+        Fixed test for merge_sam_files.
+
+0.17    2015-03-23
+        Added functionality for ReplaceSamHeader.jar.

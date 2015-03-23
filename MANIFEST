@@ -31,4 +31,5 @@ t/06-validate.t
 t/07-fastq.t
 t/08-insert_size_metrics.t
 t/09-multimetrics.t
+t/10-merge.t
 t/example/sample.insertsizemetrics.txt

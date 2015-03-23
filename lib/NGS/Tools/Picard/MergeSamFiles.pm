@@ -8,6 +8,7 @@ use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use Data::Dumper;
 
 =head1 NAME
 
@@ -40,10 +41,15 @@ sub merge_sam_files {
 	my %args = validated_hash(
 		\@_,
 		input => {
-			isa         => 'Str',
+			isa         => 'ArrayRef',
 			required    => 1
 			},
 		output => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> ''
+			},
+		sample => {
 			isa			=> 'Str',
 			required	=> 1
 			},
@@ -94,10 +100,17 @@ sub merge_sam_files {
 		'g'
 		);
 
+	my $output;
+	if ($args{'output'} eq '') {
+		$output = join('.', $args{'sample'}, 'merged.bam');
+		}
+	else {
+		$output = $args{'output'};
+		}
 
 	my $picard_jar = join('/',
 		$args{'picard'},
-		'SortSam.jar'
+		'MergeSamFiles.jar'
 		);
 	my $program = join(' ',
 		$args{'java'},
@@ -119,15 +132,24 @@ sub merge_sam_files {
     	$picard_jar
     	);
 
+    # create the input string
+    my @bam_array;
+    my $input_string;
+    foreach my $bam_file (@{ $args{'input'} }) {
+    	$input_string = join('=', 'INPUT', $bam_file);
+    	push(@bam_array, $input_string);
+    	}
+    my $bam_file_string = join(' ',
+    	@bam_array
+    	);
 	my $options = join(' ',
-		'INPUT=' . $args{'input'},
+		$bam_file_string,
 		'OUTPUT=' . $output,
 		'VALIDATION_STRINGENCY=' . $args{'stringency'},
 		'SORT_ORDER=' . $args{'sortorder'},
 		'CREATE_INDEX=' . $args{'createindex'},
 		'USE_THREADING=' . $args{'threading'}
 		);
-
 	my $cmd = join(' ',
 		$program,
 		$options
@@ -137,6 +159,8 @@ sub merge_sam_files {
 		cmd => $cmd,
 		output => $output
 		);
+
+	return(\%return_values);
 	}
 
 =head1 AUTHOR

@@ -16,7 +16,7 @@ name: NGS-Tools-Picard
 provides:
   NGS::Tools::Picard:
     file: lib/NGS/Tools/Picard.pm
-    version: '0.15'
+    version: '0.16'
   NGS::Tools::Picard::AddOrReplaceReadGroups:
     file: lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm
   NGS::Tools::Picard::CollectInsertSizeMetrics:
@@ -41,4 +41,4 @@ requires:
   Carp: '0'
   Moose: '0'
   Moose::Role: '0'
-version: '0.15'
+version: '0.16'

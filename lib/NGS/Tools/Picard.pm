@@ -19,11 +19,11 @@ use autodie;
 
 =head1 VERSION
 
-Version 0.15
+Version 0.17
 
 =cut
 
-our $VERSION = '0.15';
+our $VERSION = '0.17';
 
 =head1 SYNOPSIS
 
