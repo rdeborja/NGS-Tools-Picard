@@ -9,6 +9,7 @@ with 'NGS::Tools::Picard::MarkDuplicates';
 with 'NGS::Tools::Picard::ValidateSamFile';
 with 'NGS::Tools::Picard::SamToFastq';
 with 'NGS::Tools::Picard::MetricsParser';
+with 'NGS::Tools::Picard::ReplaceSamHeader';
 
 use strict;
 use warnings FATAL => 'all';

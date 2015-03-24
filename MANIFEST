@@ -13,6 +13,7 @@ lib/NGS/Tools/Picard/CollectMultipleMetrics.pm
 lib/NGS/Tools/Picard/MarkDuplicates.pm
 lib/NGS/Tools/Picard/MergeSamFiles.pm
 lib/NGS/Tools/Picard/MetricsParser.pm
+lib/NGS/Tools/Picard/ReplaceSamHeader.pm
 lib/NGS/Tools/Picard/Roles/Core.pm
 lib/NGS/Tools/Picard/SamToFastq.pm
 lib/NGS/Tools/Picard/SortSam.pm
@@ -32,4 +33,5 @@ t/07-fastq.t
 t/08-insert_size_metrics.t
 t/09-multimetrics.t
 t/10-merge.t
+t/11-replacesamheader.t
 t/example/sample.insertsizemetrics.txt

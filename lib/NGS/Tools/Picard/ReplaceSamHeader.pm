@@ -142,6 +142,7 @@ sub replace_sam_header {
     my $options = join(' ',
         'INPUT=' . $args{'input'},
         'OUTPUT=' . $output,
+        'HEADER=' . $args{'header_file'},
         'VALIDATION_STRINGENCY=' . $args{'stringency'},
         'CREATE_INDEX=' . $args{'createindex'}
         );
