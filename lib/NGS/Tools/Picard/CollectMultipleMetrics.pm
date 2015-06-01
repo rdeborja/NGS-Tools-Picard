@@ -124,9 +124,6 @@ sub CollectMultipleMetrics {
         '-Xmx' . $memory
         );
     if ($args{'tmpdir'} ne '') {
-        if (! -d $args{'tmpdir'}) {
-            make_path($args{'tmpdir'}, {verbose => 1, mode => 0770});
-            }
         $program = join(' ',
             $program,
             "-Djava.io.tmpdir=$args{'tmpdir'}"

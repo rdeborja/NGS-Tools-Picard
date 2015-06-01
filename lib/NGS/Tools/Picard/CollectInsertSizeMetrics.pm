@@ -125,9 +125,6 @@ sub CollectInsertSizeMetrics {
 
 	# create a tmpdir and use it in the java command
 	if ($args{'tmpdir'} ne '') {
-		if (! -d $args{'tmpdir'}) {
-			make_path($args{'tmpdir'});
-			}
 		$program = join(' ',
 			$program,
 			'-Djava.io.tmpdir=' . $args{'tmpdir'}

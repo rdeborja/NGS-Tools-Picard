@@ -25,7 +25,8 @@ Revision history for NGS-Tools-Picard
         Fixed incorrect Picard MarkDuplicates parameter METRICS to METRICS_FILE.
 
 0.08    2014-05-09
-        Fixed CollectInsertSizeMetrics method histogram file extension from txt to pdf.  Updated generate_insert_size_metrics.pl script to work on a single BAM.
+        Fixed CollectInsertSizeMetrics method histogram file extension from txt to pdf.
+        Updated generate_insert_size_metrics.pl script to work on a single BAM.
 
 0.09    2014-06-22
         Updated Picard.pm to include HPF::Roles::SGE instead of HPF::SGE::Roles.
@@ -49,3 +50,8 @@ Revision history for NGS-Tools-Picard
 
 0.17    2015-03-23
         Added functionality for ReplaceSamHeader.jar.
+
+0.18    2015-06-01
+        Removed creation of temporary directories.  This was causing issue with HPF::PBS
+        create_cluster_shell_script since method was creating the temporary directory
+        instead of letting HPF::PBS do it.

@@ -2,14 +2,7 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'INSTALLDIRS' => 'site',
-  'PL_FILES' => {},
-  'PREREQ_PM' => {
-                   'Moose::Role' => 0,
-                   'Carp' => 0,
-                   'Moose' => 0,
-                   'Test::More' => 0
-                 },
+  'VERSION_FROM' => 'lib/NGS/Tools/Picard.pm',
   'EXE_FILES' => [
                    'bin/addrg.pl',
                    'bin/bam2fastq.pl',
@@ -18,7 +11,14 @@ WriteMakefile
                    'bin/sortsam.pl',
                    'bin/validate_bam_file.pl'
                  ],
-  'NAME' => 'NGS::Tools::Picard',
-  'VERSION_FROM' => 'lib/NGS/Tools/Picard.pm'
+  'PREREQ_PM' => {
+                   'Moose' => 0,
+                   'Moose::Role' => 0,
+                   'Carp' => 0,
+                   'Test::More' => 0
+                 },
+  'INSTALLDIRS' => 'site',
+  'PL_FILES' => {},
+  'NAME' => 'NGS::Tools::Picard'
 )
 ;
