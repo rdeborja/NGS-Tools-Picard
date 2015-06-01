@@ -75,7 +75,7 @@ has 'tmpdir' => (
     is          => 'rw',
     isa         => 'Str',
     required    => 0,
-    default     => 'tmp',
+    default     => '',
     reader      => 'get_tmpdir',
     writer      => 'set_tmpdir'
     );

@@ -98,7 +98,7 @@ sub SortSam {
 		tmpdir => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> ''
+			default		=> $self->get_tmpdir()
 			}
 		);
 

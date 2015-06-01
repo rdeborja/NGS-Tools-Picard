@@ -95,7 +95,7 @@ sub replace_sam_header {
         tmpdir => {
             isa         => 'Str',
             required    => 0,
-            default     => ''
+            default     => $self->get_tmpdir()
             }
         );
     

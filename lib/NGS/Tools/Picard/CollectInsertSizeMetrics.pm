@@ -86,7 +86,7 @@ sub CollectInsertSizeMetrics {
 		tmpdir => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> ''
+			default		=> $self->get_tmpdir()
 			},
 		number_of_reads_to_process => {
 			isa			=> 'Str',

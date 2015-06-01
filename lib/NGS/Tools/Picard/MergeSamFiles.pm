@@ -86,7 +86,7 @@ sub merge_sam_files {
 		tmpdir => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> ''
+			default		=> $self->get_tmpdir()
 			},
 		threading => {
 			isa			=> 'Str',

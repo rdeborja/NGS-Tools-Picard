@@ -31,4 +31,5 @@ my $multi_metrics = $metrics->CollectMultipleMetrics(
     number_of_reads_to_process => '100000000',
     tmpdir => $tmpdir
     );
+print Dumper($multi_metrics);
 remove_tree($tmpdir);

@@ -104,7 +104,7 @@ sub MarkDuplicates {
 		tmpdir => {
 			isa			=> 'Str',
 			required	=> 0,
-			default		=> ''
+			default		=> $self->get_tmpdir()
 			}
 		);
 
