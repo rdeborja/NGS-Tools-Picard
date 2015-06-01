@@ -46,6 +46,8 @@ A role method for sorting a SAM/BAM file.
 
 =item * createindex: Flag to force Picard to create a BAM index file (default: true).
 
+=item * tmpdir: Temp directory to be used with -Djava.io.tmpdir
+
 =back
 
 =cut
