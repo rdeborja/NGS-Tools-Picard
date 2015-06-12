@@ -108,12 +108,15 @@ sub CollectInsertSizeMetrics {
 			'insertsizemetrics',
 			'txt'
 			);
-		$histogram = join('.',
-			File::Basename::basename($output, qw( .txt )),
-			'histogram',
-			'pdf'
-			);
 		}
+	else {
+		$output = $args{'output'}
+		}
+	$histogram = join('.',
+		File::Basename::basename($output, qw( .txt )),
+		'histogram',
+		'pdf'
+		);
 	my $picard_jar = join('/',
 		$args{'picard'},
 		'CollectInsertSizeMetrics.jar'
