@@ -8,7 +8,8 @@
 # 0.01          2014-04-01      rdeborja            initial development
 # 0.02          2015-01-02      rdeborja            removed HPF dependency, executing command with
 #                                                   the system() command.
-
+# 0.03          2015-06-12      rdeborja            reimplemented with HPF::PBS to submit to
+#                                                   cluster
 ### INCLUDES ######################################################################################
 use warnings;
 use strict;
@@ -21,11 +22,13 @@ use File::ShareDir ':ALL';
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
 our %opts = (
-    bam => undef,
-	java => '/hpf/tools/centos6/java/1.7.0/bin/java',
-	picard => '/hpf/tools/centos6/picard-tools/1.108',
-	memory => 8
-    );
+  bam => undef,
+  java => '/hpf/tools/centos6/java/1.7.0/bin/java',
+  picard => '/hpf/tools/centos6/picard-tools/1.108',
+  memory => 8,
+  submit => 'true',
+  number_of_reads_to_process =>. 100000
+  );
 
 ### MAIN CALLER ###################################################################################
 my $result = main();
@@ -50,7 +53,9 @@ sub main {
         "bam|b=s",
         "java|j:s",
         "picard|p:s",
-        "memory|m:i"
+        "memory|m:i",
+        "submit:s",
+        "number_of_reads_to_process:i"
         ) or pod2usage(64);
     
     pod2usage(1) if $opts{'help'};
@@ -65,14 +70,24 @@ sub main {
 
     my $picard = NGS::Tools::Picard->new();
     my $insertsize = $picard->CollectInsertSizeMetrics(
-    	input => $opts{'bam'},
-        java => $opts{'java'},
-        picard => $opts{'picard'}
-    	);
-    my $picard_status = system($insertsize->{'cmd'});
-    print "\nPicard complete: exit status $picard_status\n\n";
-    
-    return $picard_status;
+      input => $opts{'bam'},
+      java => $opts{'java'},
+      picard => $opts{'picard'},
+      number_of_reads_to_process => $opts{'number_of_reads_to_process'}
+      );
+    my $template_dir = join('/', dist_dir('HPF'), 'tempaltes');
+    my $template = 'submit_to_pbs.template';
+    my $pbs = HPF::PBS->new();
+    my $pbs_run = $pbs->create_cluster_shell_script(
+      jobname => 'insertsize',
+      command => $insertsize->{'cmd'},
+      template => $template,
+      memory => $opts{'memory'} + 8,
+      template_dir => $template_dir,
+      submit => $opts{'submit'}
+      );
+
+    return $0;
     }
 
 
@@ -94,6 +109,9 @@ B<generate_insert_size_metrics.pl> [options] [file ...]
     --java          full path to Java program (default: /hpf/tools/centos6/java/1.7.0/bin/java)
     --picard        full path to Picard suite of programs (default: )
     --memory        memory to use for Java engine (default: 4)
+    --submit        submit job to cluster (default: true)
+    --number_of_reads_to_process
+                    number of reads to calculate insert size distribution (default: 100000)
 
 =head1 OPTIONS
 
@@ -122,6 +140,14 @@ Full path to the directory containing the Picard JAR files
 =item B<--memory>
 
 Memory to allocate to the Java engine (default: 4)
+
+=item B<--submit>
+
+A boolean to determine whether to submit job to PBS (default: true)
+
+=item B<--number_of_reads_to_process>
+
+Number of reads to analyze to determine insert size distribution (default: 100000)
 
 =back
 
