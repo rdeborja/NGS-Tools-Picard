@@ -55,3 +55,6 @@ Revision history for NGS-Tools-Picard
         Removed creation of temporary directories.  This was causing issue with HPF::PBS
         create_cluster_shell_script since method was creating the temporary directory
         instead of letting HPF::PBS do it.
+
+0.19    2015-06-12
+        Fixed CollectInsertSizeMetrics method to output histogram image.
