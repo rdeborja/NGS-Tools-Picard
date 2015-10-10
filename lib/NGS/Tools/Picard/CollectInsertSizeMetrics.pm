@@ -210,11 +210,7 @@ sub get_mean_insert_size {
 		}
 	close($input_fh);
 
-	my %return_values = (
-		mean_insert_size => $mean_insert_size
-		);
-
-	return(\%return_values);
+	return($mean_insert_size);
 	}
 
 =head1 AUTHOR

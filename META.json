@@ -35,7 +35,7 @@
    "provides" : {
       "NGS::Tools::Picard" : {
          "file" : "lib/NGS/Tools/Picard.pm",
-         "version" : "0.18"
+         "version" : "0.19"
       },
       "NGS::Tools::Picard::AddOrReplaceReadGroups" : {
          "file" : "lib/NGS/Tools/Picard/AddOrReplaceReadGroups.pm"
@@ -72,5 +72,5 @@
       }
    },
    "release_status" : "stable",
-   "version" : "0.18"
+   "version" : "0.19"
 }

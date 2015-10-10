@@ -189,6 +189,58 @@ sub MarkDuplicates {
 	return(\%return_values);
 	}
 
+=head2 $obj->get_percent_duplication()
+
+From the output metrics of MarkDuplicates, get the 
+
+=head3 Arguments:
+
+=over 2
+
+=item * input: Metrics output file from MarkDuplicates.jar
+
+=back
+
+=cut
+
+sub get_percent_duplication {
+	my $self = shift;
+	my %args = validated_hash(
+		\@_,
+		input => {
+			isa         => 'Str',
+			required    => 1
+			}
+		);
+
+	my $percent_duplication;
+	my $sample;
+	open(my $ifh, '<', $args{'input'});
+	while(my $line = <$ifh>) {
+		$line =~ s/^\s+//;
+		$line =~ s/\s+$//;
+		next if ($line =~ m/^#/);
+
+		# look for the header that stats with LIBRARY
+		if ($line =~ m/^LIBRARY/) {
+			# get the next line which will contain the data of interest
+			$line = <$ifh>;
+			$line =~ s/^\s+//;
+			$line =~ s/\s+$//;
+			my @input_line = split(/\t/, $line);
+			$sample = $input_line[0];
+			$percent_duplication = $input_line[7] * 100;
+			}
+		}
+	close($ifh);
+
+	my %return_values = (
+		sample => $sample,
+		percent_duplication => $percent_duplication
+		);
+
+	return(\%return_values);
+	}
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at sickkids.ca> >>

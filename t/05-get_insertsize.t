@@ -30,4 +30,4 @@ my $picard_insertsize = $picard->get_mean_insert_size(
 	);
 
 my $expected_mean_insert_size = 201.124261;
-is($picard_insertsize->{'mean_insert_size'}, $expected_mean_insert_size, 'Mean insert size matches expected');
+is($picard_insertsize, $expected_mean_insert_size, 'Mean insert size matches expected');

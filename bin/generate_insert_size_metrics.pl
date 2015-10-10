@@ -18,6 +18,7 @@ use Getopt::Long;
 use Pod::Usage;
 use NGS::Tools::Picard;
 use File::ShareDir ':ALL';
+use HPF::PBS;
 
 ### COMMAND LINE DEFAULT ARGUMENTS ################################################################
 # list of arguments and default values go here as hash key/value pairs
@@ -27,7 +28,7 @@ our %opts = (
   picard => '/hpf/tools/centos6/picard-tools/1.108',
   memory => 8,
   submit => 'true',
-  number_of_reads_to_process =>. 100000
+  number_of_reads_to_process => 100000
   );
 
 ### MAIN CALLER ###################################################################################
@@ -75,7 +76,7 @@ sub main {
       picard => $opts{'picard'},
       number_of_reads_to_process => $opts{'number_of_reads_to_process'}
       );
-    my $template_dir = join('/', dist_dir('HPF'), 'tempaltes');
+    my $template_dir = join('/', dist_dir('HPF'), 'templates');
     my $template = 'submit_to_pbs.template';
     my $pbs = HPF::PBS->new();
     my $pbs_run = $pbs->create_cluster_shell_script(
@@ -84,10 +85,11 @@ sub main {
       template => $template,
       memory => $opts{'memory'} + 8,
       template_dir => $template_dir,
+      modules_to_load => ['R/3.1.1', 'perl', 'picard-tools/1.108'],
       submit => $opts{'submit'}
       );
 
-    return $0;
+    return 0;
     }
 
 

@@ -58,3 +58,11 @@ Revision history for NGS-Tools-Picard
 
 0.19    2015-06-12
         Fixed CollectInsertSizeMetrics method to output histogram image.
+
+0.20    2015-07-29
+        get_mean_insert_size() now returns the actual numeric value instead of a
+        hash reference containing the mean insert size.
+
+0.21    2015-08-07
+        Added new roles for version 1.136 where the Picard interface has completely
+        changed mimicing the GATK interface.

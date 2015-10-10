@@ -95,10 +95,25 @@ has 'createindex' => (
     writer      => 'set_createindex'
     );
 
+=head2 $obj->createmd5
+
+A boolean flag for creating a MD5 check sum hash file.
+
+=cut
+
+has 'createmd5' => (
+    is          => 'rw',
+    isa         => 'Str',
+    required    => 0,
+    default     => 'true',
+    reader      => 'get_createmd5',
+    writer      => 'set_createmd5'
+    );
+
 
 =head1 AUTHOR
 
-Richard de Borja, C<< <richard.deborja at sickkids.ca> >>
+Richard J. de Borja, C<< <richard.deborja at sickkids.ca> >>
 
 =head1 ACKNOWLEDGEMENT
 

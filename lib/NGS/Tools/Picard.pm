@@ -10,6 +10,7 @@ with 'NGS::Tools::Picard::ValidateSamFile';
 with 'NGS::Tools::Picard::SamToFastq';
 with 'NGS::Tools::Picard::MetricsParser';
 with 'NGS::Tools::Picard::ReplaceSamHeader';
+with 'NGS::Tools::Picard::MergeSamFiles';
 
 use strict;
 use warnings FATAL => 'all';
@@ -20,11 +21,11 @@ use autodie;
 
 =head1 VERSION
 
-Version 0.19
+Version 0.20
 
 =cut
 
-our $VERSION = '0.19';
+our $VERSION = '0.20';
 
 =head1 SYNOPSIS
 
