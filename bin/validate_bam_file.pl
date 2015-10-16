@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 
 ### validate_bam_file.pl ##########################################################################
 # Run Picard's ValidateSamFile.jar on a BAM file.
@@ -8,7 +8,9 @@
 # 0.01          2014-04-01      rdeborja            Initial development.
 # 0.02          2015-01-02      rdeborja            removed HPF dependency, executes command using
 #                                                   the system() function
-
+# 0.03          2015-10-16      rdeborja            Updated sh-bang statement to use
+#                                                   /usr/bin/env perl instead of /usr/bin/perl
+#
 ### INCLUDES ######################################################################################
 use warnings;
 use strict;
