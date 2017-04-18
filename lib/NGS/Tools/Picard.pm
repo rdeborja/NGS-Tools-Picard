@@ -2,6 +2,7 @@ package NGS::Tools::Picard;
 use Moose;
 use MooseX::Params::Validate;
 
+with 'NGS::Tools::Picard::Roles::Core';
 with 'NGS::Tools::Picard::AddOrReplaceReadGroups';
 with 'NGS::Tools::Picard::SortSam';
 with 'NGS::Tools::Picard::CollectInsertSizeMetrics';
@@ -21,11 +22,11 @@ use autodie;
 
 =head1 VERSION
 
-Version 0.20
+Version 0.22
 
 =cut
 
-our $VERSION = '0.20';
+our $VERSION = '0.22';
 
 =head1 SYNOPSIS
 

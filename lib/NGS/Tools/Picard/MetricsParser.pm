@@ -79,6 +79,68 @@ sub get_insert_size_summary_statistics {
 	return(\%statistics_summary);
 	}
 
+=head2 $obj->get_markduplicate_summary()
+
+Returns the duplicate summary from Picard's MarkDuplicates program.
+
+=head3 Arguments:
+
+=over 2
+
+=item * file: full path to the MarkDuplicates metrics output file.
+
+=back
+
+=cut
+
+sub get_markduplicate_summary {
+	my $self = shift;
+	my %args = validated_hash(
+		\@_,
+		file => {
+			isa         => 'Str',
+			required    => 1
+			}
+		);
+
+	my %summary_statistics;
+	open(my $ifh, '<', $args{'file'});
+	while(my $line = <$ifh>) {
+        $line =~ s/^\s+//;
+        $line =~ s/\s+$//;
+
+        # skip all the headers lines starting with #, these are either comments or
+        # table headers
+        next if ($line =~ m/^\#/);
+
+        # this is the start of the embedded table with the information we need
+        if ($line =~ m/^MEDIAN_INSERT_SIZE/) {
+            # the next line is the data line we need containing insert size summary stats
+            $line = <$ifh>;
+            $line =~ s/^\s+//;
+            $line =~ s/\s+$//;
+
+            my @input_line = split(/\t/, $line);
+            $statistics_summary{'MEDIAN_INSERT_SIZE'} = $input_line[0];
+            $statistics_summary{'MEDIAN_ABSOLUTE_DEVIATION'} = $input_line[1];
+            $statistics_summary{'MIN_INSERT_SIZE'} = $input_line[2];
+            $statistics_summary{'MAX_INSERT_SIZE'} = $input_line[3];
+            $statistics_summary{'MEAN_INSERT_SIZE'} = $input_line[4];
+            $statistics_summary{'STANDARD_DEVIATION'} = $input_line[5];
+            $statistics_summary{'READ_PAIRS'} = $input_line[6];
+            $statistics_summary{'PAIR_ORIENTATION'} = $input_line[7];
+            last;
+            }
+		}
+    close($ifh);
+    
+	my %return_values = (
+
+		);
+
+	return(\%return_values);
+	}
+
 =head1 AUTHOR
 
 Richard de Borja, C<< <richard.deborja at sickkids.ca> >>

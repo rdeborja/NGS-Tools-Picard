@@ -1,41 +1,56 @@
-package NGS::Tools::Picard::FilterSamReads;
+package NGS::Tools::Picard2::Roles::SortSam;
 use Moose::Role;
 use MooseX::Params::Validate;
-
-with 'NGS::Tools::Picard::SortSam';
 
 use strict;
 use warnings FATAL => 'all';
 use namespace::autoclean;
 use autodie;
+use File::Basename;
 
 =head1 NAME
 
-NGS::Tools::Picard::FilterSamReads
+NGS::Tools::Picard::SortSam
 
 =head1 SYNOPSIS
 
-A Perl Moose role for filtering SAM/BAM reads.
+A Perl Moose Role that wraps the SortSam Picard application.
 
 =head1 ATTRIBUTES AND DELEGATES
 
 =head1 SUBROUTINES/METHODS
 
-=head2 $obj->FilterSamReads()
+=head2 $obj->SortSam()
 
-A method for filtering SAM/BAM reads using Picard's FilterSamReads.jar program.
+A role method for sorting a SAM/BAM file.
 
 =head3 Arguments:
 
 =over 2
 
-=item * input: name of SAM/BAM file to process.
+=item * input: SAM/BAM file to process (required)
+
+=item * output: Name of output BAM/SAM file after sorting
+
+=item * stringency: stringency setting for SAM/BAM file validation (default: LENIENT)
+
+=item * java: full path to Java program (default: java).
+
+=item * picard: full directory path of Picard tools
+
+=item * sortorder: The order for sorting the final BAM file (default: coordinate).
+
+=item * memory: Amount of memory to allocate to the Java engine (default: 4).
+
+=item * createindex: Flag to force Picard to create a BAM index file (default: true).
+
+=item * tmpdir: Temp directory to be used with -Djava.io.tmpdir
 
 =back
 
 =cut
 
-sub FilterSamReads {
+sub SortSam {
     my $self = shift;
     my %args = validated_hash(
         \@_,
@@ -51,22 +66,22 @@ sub FilterSamReads {
         stringency => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_validation_stringency()
+            default     => 'LENIENT'
             },
         java => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_java()
+            default     => 'java'
             },
         picard => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_picard()
+            default     => '${PICARD}'
             },
         memory => {
             isa         => 'Int',
             required    => 0,
-            default     => 8
+            default     => 4
             },
         sortorder => {
             isa         => 'Str',
@@ -76,12 +91,17 @@ sub FilterSamReads {
         createindex => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_createindex()
+            default     => 'true'
             },
-        createmd5 => {
+        tmpdir => {
             isa         => 'Str',
             required    => 0,
-            default     => $self->get_createmd5()
+            default     => '/tmp'
+            },
+        processors => {
+            isa         => 'Int',
+            required    => 0,
+            default     => 1
             }
         );
 
@@ -89,15 +109,53 @@ sub FilterSamReads {
         $args{'memory'},
         'g'
         );
+
     my $output;
-    if ($args{'output'} eq '') {
+    if ('' eq $args{'output'}) {
         $output = join('.',
             File::Basename::basename($args{'input'}, qw( .bam .sam )),
-            ''
+            'sorted',
+            'bam'
             );
         }
-    my %return_values = (
+    else {
+        $output = $args{'output'};
+        }
 
+    my $program = join(' ',
+        $args{'java'},
+        '-Xmx' . $memory,
+        );
+    # create a tmpdir and use it in the java command
+    if ($args{'tmpdir'} ne '') {
+        $program = join(' ',
+            $program,
+            '-Djava.io.tmpdir=' . $args{'tmpdir'}
+            );
+        }
+    $program = join(' ',
+        $program,
+        '-jar',
+        $args{'picard'}
+        );
+
+    my $options = join(' ',
+        'INPUT=' . $args{'input'},
+        'OUTPUT=' . $output,
+        'VALIDATION_STRINGENCY=' . $args{'stringency'},
+        'SORT_ORDER=' . $args{'sortorder'},
+        'CREATE_INDEX=' . $args{'createindex'},
+        'NUM_PROCESSORS=', $args{'processors'}
+        );
+
+    my $cmd = join(' ',
+        $program,
+        $options
+        );
+
+    my %return_values = (
+        cmd => $cmd,
+        output => $output
         );
 
     return(\%return_values);
@@ -121,7 +179,7 @@ automatically be notified of progress on your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc NGS::Tools::Picard::FilterSamReads
+    perldoc NGS::Tools::Picard::SortSam
 
 You can also look for information at:
 
@@ -191,4 +249,4 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 no Moose::Role;
 
-1; # End of NGS::Tools::Picard::FilterSamReads
+1; # End of NGS::Tools::Picard::SortSam

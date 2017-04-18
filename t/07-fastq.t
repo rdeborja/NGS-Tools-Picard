@@ -27,9 +27,23 @@ lives_ok
 my $test_bam = 'test.bam';
 
 my $picard_fastq = $picard->SamToFastq(
-	input => $test_bam
+	input => $test_bam,
+	readgroup => 'true'
 	);
 my $expected_cmd = join(' ',
+	"java -Xmx4g",
+	'-jar ${PICARDROOT}/SamToFastq.jar',
+	"INPUT=test.bam",
+	"VALIDATION_STRINGENCY=LENIENT",
+	"INCLUDE_NON_PF_READS=true",
+	"OUTPUT_PER_RG=true"
+	);
+is($picard_fastq->{'cmd'}, $expected_cmd, 'command matches expected with readgroups');
+my $picard_fastq = $picard->SamToFastq(
+	input => $test_bam,
+	readgroup => 'false'
+	);
+$expected_cmd = join(' ',
 	"java -Xmx4g",
 	'-jar ${PICARDROOT}/SamToFastq.jar',
 	"INPUT=test.bam",
@@ -38,4 +52,5 @@ my $expected_cmd = join(' ',
 	"INCLUDE_NON_PF_READS=true",
 	"SECOND_END_FASTQ=test.read2.fastq.gz"
 	);
-is($picard_fastq->{'cmd'}, $expected_cmd, 'command matches expected');
+is($picard_fastq->{'cmd'}, $expected_cmd, 'command matches expected without readgroups');
+

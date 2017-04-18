@@ -3,6 +3,7 @@ use Moose::Role;
 use MooseX::Params::Validate;
 
 with 'NGS::Tools::Picard::Roles::Core';
+with 'NGS::Tools::Picard::MarkDuplicates';
 
 use strict;
 use warnings FATAL => 'all';

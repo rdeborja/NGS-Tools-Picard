@@ -35,6 +35,8 @@ Converts a SAM/BAM file to a FASTQ.
 
 =item * type: single or paired (default: paired)
 
+=item * readgroup: true/false to determine whether to output FASTQ files per read group (optional, default: true)
+
 =item * stringency: validation stringency (default: LENIENT)
 
 =item * java: full path to the Java program (default: java)
@@ -61,6 +63,11 @@ sub SamToFastq {
 			isa			=> 'Str',
 			required	=> 0,
 			default		=> 'paired'
+			},
+		readgroup => {
+			isa			=> 'Str',
+			required	=> 0,
+			default		=> 'false'
 			},
 		stringency => {
 			isa			=> 'Str',
@@ -94,13 +101,12 @@ sub SamToFastq {
 	my $second_end_fastq;
 	if ($args{'type'} eq 'paired') {
 		$read1 = join('.',
-			File::Basename::basename($args{'input'}, qw( .sam .bam )),
-			'read1',
+			join('_', File::Basename::basename($args{'input'}, qw( .sam .bam )), '_R1'),
 			'fastq',
 			'gz'
 			);
 		$read2 = join('.',
-			File::Basename::basename($args{'input'}, qw( .sam .bam )),
+			join('_', File::Basename::basename($args{'input'}, qw( .sam .bam )), '_R2'),
 			'read2',
 			'fastq',
 			'gz'
@@ -146,19 +152,45 @@ sub SamToFastq {
     	'-jar',
     	$picard_jar
     	);
-	my $options = join(' ',
-		'INPUT=' . $args{'input'},
-		'FASTQ=' . $read1,
-		'VALIDATION_STRINGENCY=' . $args{'stringency'},
-		'INCLUDE_NON_PF_READS=' . 'true'
-		);
-
-	if ($args{'type'} eq 'paired') {
+    my $options = join(' ',
+    	'INPUT=' . $args{'input'},
+    	'VALIDATION_STRINGENCY=' . $args{'stringency'},
+    	'INCLUDE_NON_PF_READS=' . 'true'
+    	);
+	if ($args{'readgroup'} eq 'true') {
 		$options = join(' ',
 			$options,
-			$second_end_fastq
+			'OUTPUT_PER_RG=' . $args{'readgroup'}
 			);
 		}
+	elsif ($args{'readgroup'} eq 'false') {
+		if ($args{'type'} ne 'paired') {
+			$options = join(' ',
+				$options,
+				'FASTQ=' . $read1
+				);
+			}
+		elsif ($args{'type'} eq 'true') {
+			$options = join(' ',
+				$options,
+				'FASTQ=' . $read1,
+				$second_end_fastq
+				);
+			}
+		}
+	# $options = join(' ',
+	# 	'INPUT=' . $args{'input'},
+	# 	'FASTQ=' . $read1,
+	# 	'VALIDATION_STRINGENCY=' . $args{'stringency'},
+	# 	'INCLUDE_NON_PF_READS=' . 'true'
+	# 	);
+
+	# if ($args{'type'} eq 'paired') {
+	# 	$options = join(' ',
+	# 		$options,
+	# 		$second_end_fastq
+	# 		);
+	# 	}
 
 	my $cmd = join(' ',
 		$program,

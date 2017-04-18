@@ -63,6 +63,7 @@ Revision history for NGS-Tools-Picard
         get_mean_insert_size() now returns the actual numeric value instead of a
         hash reference containing the mean insert size.
 
-0.21    2015-08-07
-        Added new roles for version 1.136 where the Picard interface has completely
-        changed mimicing the GATK interface.
+0.21    2016-02-01
+        Removed requirement for NGS::Tools::Picard::Roles::Core in each
+        individual role.  This caused a conflict when more than one role was
+        used in a class.
